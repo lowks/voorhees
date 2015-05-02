@@ -16,4 +16,20 @@ defmodule Voorhees.Test.MatchesPayload do
     content = Poison.encode! %{ a: 1, b: 2, c: 3 }
     assert matches_payload?(content, %{ :a => 1, "b" => 2 })
   end
+
+  test "validates scalar lists" do
+    content = Poison.encode! %{ a: 1, b: [2] }
+    assert matches_payload?(content, %{ :a => 1, "b" => [2] })
+
+    content = Poison.encode! %{ a: 1, b: [2, 1] }
+    assert !matches_payload?(content, %{ :a => 1, "b" => [2] })
+
+    content = Poison.encode! %{ a: 1, b: [2] }
+    assert !matches_payload?(content, %{ :a => 1, "b" => [1, 2] })
+  end
+
+  test "validates scalar lists with respect to array order" do
+    content = Poison.encode! %{ a: 1, b: [2, 1] }
+    assert !matches_payload?(content, %{ :a => 1, "b" => [1, 2] })
+  end
 end

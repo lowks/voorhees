@@ -65,6 +65,29 @@ defmodule Voorhees do
       iex> content = ~S[{ "foo": 1, "bar": "baz" }]
       iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => "baz" })
       true
+
+  Extra key/value pairs in content are ignored
+
+      iex> content = ~S[{ "foo": 1, "bar": "baz", "boo": 3 }]
+      iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => "baz" })
+      true
+
+  Extra key/value pairs in expected payload cause the validation to fail
+
+      iex> content = ~S[{ "foo": 1, "bar": "baz"}]
+      iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => "baz", :boo => 3 })
+      false
+
+  Validates scalar lists
+
+      iex> content = ~S/{ "foo": 1, "bar": ["baz"]}/
+      iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => ["baz"] })
+      true
+
+      # Order is respected
+      iex> content = ~S/{ "foo": 1, "bar": [1, "baz"]}/
+      iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => ["baz", 1] })
+      false
   """
   def matches_payload?(content, expected_payload) do
     expected_payload = _normalize_map_keys(expected_payload)
