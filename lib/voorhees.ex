@@ -55,6 +55,13 @@ defmodule Voorhees do
   def matches_payload?(content, expected_payload) do
     expected_payload = _normalize_map_keys(expected_payload)
     parsed_content =  Poison.decode!(content)
+    |> Enum.filter(fn
+      {key, _value} ->
+        expected_payload
+        |> Map.keys
+        |> Enum.member?(key)
+    end)
+    |> Enum.into(%{})
 
     Map.equal?(parsed_content, expected_payload)
   end
