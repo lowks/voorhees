@@ -1,4 +1,4 @@
-defmodule Voorhees.Test.MatchesSchema do
+defmodule Voorhees.Test.MatchesPayload do
   use ExUnit.Case
   import Voorhees
 

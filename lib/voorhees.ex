@@ -52,6 +52,20 @@ defmodule Voorhees do
     _matches_schema?(parsed_content, expected_keys)
   end
 
+  @doc """
+  Returns true if the content matches the values from expected payload.
+  Key/value pairs in the content that are not in the expected payload are ignored.
+  Key/value pairs in the expected payload that are not in the content cause
+  `matches_payload?` to return false
+
+  ## Examples
+
+  Expected payload can keys can be either strings or atoms
+
+      iex> content = ~S[{ "foo": 1, "bar": "baz" }]
+      iex> Voorhees.matches_payload?(content, %{ :foo => 1, "bar" => "baz" })
+      true
+  """
   def matches_payload?(content, expected_payload) do
     expected_payload = _normalize_map_keys(expected_payload)
     parsed_content =  Poison.decode!(content)
